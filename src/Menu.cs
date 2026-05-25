@@ -5,7 +5,7 @@ namespace Asciify;
 public static class Menu
 {
     public static void Run()
-    {
+    {   
         //Ensure the console can display UTF-8 characters for better ASCII art representation.
         Console.OutputEncoding = System.Text.Encoding.UTF8; 
 
@@ -25,7 +25,7 @@ public static class Menu
             else if (choice == "Exit")
             {
                 Console.Clear();
-
+                
                 if (Random.Shared.Next(0, 1000) == 0) //Easter egg: 1 in 1000 chance to show a dark souls style message on exit.
                     AnsiConsole.Write(new FigletText("YOU DIED").Centered().Color(Color.Red));
                 else
@@ -35,14 +35,28 @@ public static class Menu
             } break;
         }
     }
-        try
+
+
+    public static void Convert()
+    {
+        var filePath = AnsiConsole.Ask<string>("Enter the image path or drag and drop the image here:");
+        if (!File.Exists(filePath))        
         {
-            // Tmr we continue with the image processing and ASCII conversion logic here.
-            Console.WriteLine("The image path is valid. {0}", imagePath);
+            AnsiConsole.MarkupLine("[red]File not found. Please try again.[/]");
+            return;
         }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"An error occurred: {ex.Message}");
-        }
+
+        var useroptions = new UserOptions();
+        //Get user options for ASCII conversion.
+        useroptions.With = AnsiConsole.Ask<int>("Enter the desired width of the ASCII art (default is 100):", defaultValue: 100);
+        useroptions.Invert = AnsiConsole.Confirm("Invert brightness (dark areas become light and vice versa)?", defaultValue: false);
+        useroptions.Color = AnsiConsole.Confirm("Colorize the ASCII art?", defaultValue: false);
+
+        Renderize(useroptions, filePath);
+    }
+
+    public static void Renderize(UserOptions options, string filePath)
+    {
+
     }
 }
