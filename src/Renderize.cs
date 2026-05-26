@@ -31,10 +31,17 @@ public static class Render
                 float brightness = (pixel.Red * 0.299f + pixel.Green * 0.587f + pixel.Blue * 0.114f) / 255f;
                 if (options.Invert) brightness = 1f - brightness;
                 int index = (int)(brightness * (chars.Length - 1));
-                sb.Append(chars[index]);
+                if (options.Color)
+                {
+                    string ch = chars[index] == '[' ? "[[" : chars[index].ToString();
+                    sb.Append($"[rgb({pixel.Red},{pixel.Green},{pixel.Blue})]{ch}[/]");
+                }
+                else
+                    sb.Append(chars[index]);
             }
             sb.AppendLine();
         }
-    AnsiConsole.Write(sb.ToString());
+    if (options.Color) AnsiConsole.Markup(sb.ToString());
+    else AnsiConsole.Write(sb.ToString());
     }
 }
