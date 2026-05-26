@@ -11,8 +11,8 @@ public static class Render
     using var bitmap = SKBitmap.Decode(filePath);
 
     //Redimention the iamge based on the user specified width while maintaining aspect ratio.
-    int newHeight =  (int)((float)bitmap.Height / bitmap.Width * options.With / 2);
-    var resized = new SKBitmap(new SKImageInfo(options.With, newHeight));
+    int newHeight =  (int)((float)bitmap.Height / bitmap.Width * options.Width / 2);
+    var resized = new SKBitmap(new SKImageInfo(options.Width, newHeight));
     bitmap.ScalePixels(resized, SKSamplingOptions.Default);
 
     // Defo need upgrading this to use color if the user wants it, but for now just render the ASCII art in grayscale.

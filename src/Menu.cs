@@ -60,7 +60,7 @@ public static class Menu
 
             var useroptions = new UserOptions();
             //Get user options for ASCII conversion.
-            useroptions.With = AnsiConsole.Ask<int>("Enter the desired width of the ASCII art (default is 100):", defaultValue: 100);
+            useroptions.Width = AnsiConsole.Ask<int>("Enter the desired width of the ASCII art (default is 100):", defaultValue: 100);
             useroptions.Invert = AnsiConsole.Confirm("Invert brightness (dark areas become light and vice versa)?", defaultValue: false);
             useroptions.Color = AnsiConsole.Confirm("Colorize the ASCII art?", defaultValue: false);
 
