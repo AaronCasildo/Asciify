@@ -51,7 +51,7 @@ public static class Menu
                     AnsiConsole.MarkupLine("[yellow]Exiting to main menu...[/]");
                     return;
                 }
-                if (!File.Exists(filePath))
+                else
                 {
                     AnsiConsole.MarkupLine("[red]File not found. Please try again.[/]");
                     continue;
