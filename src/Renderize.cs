@@ -39,5 +39,10 @@ public static class Render
             }
         if (options.Color) AnsiConsole.Markup(sb.ToString());
         else AnsiConsole.Write(sb.ToString());
+
+        if(AnsiConsole.Confirm("Do you want to download the ASCII art?"))
+        {
+            if (options.Download) Download.HTMLDownload(sb.ToString());
+        }
     }
 }
