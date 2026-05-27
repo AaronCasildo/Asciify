@@ -4,6 +4,18 @@ namespace Asciify;
 
 public static class Menu
 {
+    private static string SanitizeFilePath(string input)
+    {
+        //Cleanses the file path input by removing common artifacts from drag-and-drop in PowerShell and Command Prompt.
+        if (input.StartsWith("& "))
+            input = input.Substring(2);
+               
+        input = input.Trim('"', '\'');
+        input = input.Trim();
+        
+        return input;
+    }
+
     public static void Run()
     {   
         //Ensure the console can display UTF-8 characters for better ASCII art representation.
@@ -44,6 +56,8 @@ public static class Menu
         while (true)
         {
             var filePath = AnsiConsole.Ask<string>("Enter the image path or drag and drop the image here (q to quit):");
+            filePath = SanitizeFilePath(filePath);
+            
             if (!File.Exists(filePath))        
             {
                 if (filePath.ToLower() == "q" || filePath.ToLower() == "quit")
