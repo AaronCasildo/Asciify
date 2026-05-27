@@ -83,13 +83,8 @@ public static class Menu
             useroptions.Invert = AnsiConsole.Confirm("Invert brightness (dark areas become light and vice versa)?", defaultValue: false);
             useroptions.Color = AnsiConsole.Confirm("Colorize the ASCII art?", defaultValue: true);
 
-            AnsiConsole.Status()
-                .Spinner(Spinner.Known.Dots)
-                .SpinnerStyle(Style.Parse("green"))
-                .Start("Processing image...", ctx =>
-                {
-                    Render.Renderize(useroptions, filePath);
-                });
+            Render.Renderize(useroptions, filePath);
+            
             AnsiConsole.MarkupLine("[green]Done! Press any key to return to the main menu...[/]");
             Console.ReadKey(true);
             AnsiConsole.Clear();
