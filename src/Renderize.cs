@@ -9,6 +9,7 @@ public static class Render
     {
         //Load the image using SkiaSharp.
         using var bitmap = SKBitmap.Decode(filePath);
+        const float redpixel = 0.299f, greenpixel = 0.587f, bluepixel = 0.114f;
 
         //Redimention the iamge based on the user specified width while maintaining aspect ratio.
         int newHeight =  (int)((float)bitmap.Height / bitmap.Width * options.Width / 2);
@@ -23,7 +24,7 @@ public static class Render
                 for (int x = 0; x < resized.Width; x++)
                 {
                     var pixel = resized.GetPixel(x, y);
-                    float brightness = (pixel.Red * 0.299f + pixel.Green * 0.587f + pixel.Blue * 0.114f) / 255f;
+                    float brightness = (pixel.Red * redpixel + pixel.Green * greenpixel + pixel.Blue * bluepixel) / 255f;
                     if (options.Invert) brightness = 1f - brightness;
                     int index = (int)(brightness * (chars.Length - 1));
                     if (options.Color)
