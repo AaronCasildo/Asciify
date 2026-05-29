@@ -6,7 +6,7 @@ public static class Download
 {
     public static void HTMLDownload(string asciiArt)
     {
-        var fileName = AnsiConsole.Ask<string>("Enter a file name for the HTML download (default: ascii-art.html):");
+        var fileName = AnsiConsole.Ask<string>("Enter a file name for the HTML download:");
         if (string.IsNullOrWhiteSpace(fileName)) fileName = "ascii-art.html";
         if (!fileName.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
             fileName += ".html";
@@ -98,5 +98,10 @@ public static class Download
             .Replace("<", "&lt;")
             .Replace(">", "&gt;")
             .Replace("\"", "&quot;");
+    }
+
+    private static void PNGDownload(string asciiArt)
+    {
+        AnsiConsole.MarkupLine("[yellow]PNG download is not implemented yet.[/]");
     }
 }

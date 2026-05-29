@@ -49,7 +49,7 @@ public static class Render
         {
             Download.HTMLDownload(sb.ToString());
         }
-        else if (newchoice == "Download as png")
+        else if (newchoice == "Download as PNG")
         {
             Download.PNGDownload(sb.ToString());
         }
