@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="SixLabors.ImageSharp" Version="2.1.9" />
-    <PackageReference Include="SkiaSharp" Version="3.119.2" />
+    <PackageReference Include="SkiaSharp" Version="3.119.4" />
     <PackageReference Include="Spectre.Console" Version="0.55.2" />
   </ItemGroup>
 
