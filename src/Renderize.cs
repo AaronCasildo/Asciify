@@ -40,9 +40,22 @@ public static class Render
         if (options.Color) AnsiConsole.Markup(sb.ToString());
         else AnsiConsole.Write(sb.ToString());
 
-        if(AnsiConsole.Confirm("Do you want to download the ASCII art?"))
+        var newchoice = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("What would you like to do?")
+                .AddChoices(new[] { "Download as HTML", "Download as PNG", "Exit" }));
+        
+        if (newchoice == "Download as HTML")
         {
-            if (options.Download) Download.HTMLDownload(sb.ToString());
+            Download.HTMLDownload(sb.ToString());
+        }
+        else if (newchoice == "Download as png")
+        {
+            Download.PNGDownload(sb.ToString());
+        }
+        else if (newchoice == "Exit")
+        {
+            return;
         }
     }
 }
