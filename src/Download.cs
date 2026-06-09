@@ -100,7 +100,7 @@ public static class Download
             .Replace("\"", "&quot;");
     }
 
-    private static void PNGDownload(string asciiArt)
+    public static void PNGDownload(string asciiArt)
     {
         AnsiConsole.MarkupLine("[yellow]PNG download is not implemented yet.[/]");
     }
