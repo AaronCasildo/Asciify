@@ -59,7 +59,7 @@ public static class Download
 
                 if (end > i)
                 {
-                    var rgb = input.Substring(i + 5, end - (i + 5));
+                    var rgb = input.Substring(i + 5, end - (i + 5) - 1);
                     if (spanOpen) sb.Append("</span>");
                     sb.Append("<span style=\"color: rgb(" + HtmlEncode(rgb) + ")\">" );
                     spanOpen = true;
@@ -109,9 +109,8 @@ public static class Download
             fileName += ".png";
 
         var outputPath = Path.Combine(Environment.CurrentDirectory, fileName);
-        var plainText = StripMarkup(asciiArt).Replace("\r\n", "\n");
-        var lines = plainText.Split('\n');
-        var maxColumns = lines.Length == 0 ? 0 : lines.Max(line => line.Length);
+        var lines = ParsePngLines(asciiArt);
+        var maxColumns = lines.Count == 0 ? 0 : lines.Max(line => line.Count);
 
         const float textSize = 24f;
         const float padding = 24f;
@@ -137,23 +136,24 @@ public static class Download
         var lineStep = cellHeight;
 
         var width = Math.Max(1, (int)Math.Ceiling((maxColumns * cellWidth) + (padding * 2)));
-        var height = Math.Max(1, (int)Math.Ceiling((lines.Length * lineStep) + (padding * 2)));
+        var height = Math.Max(1, (int)Math.Ceiling((lines.Count * lineStep) + (padding * 2)));
 
         using var bitmap = new SKBitmap(width, height, SKColorType.Bgra8888, SKAlphaType.Opaque);
         using var canvas = new SKCanvas(bitmap);
 
         canvas.Clear(SKColors.White);
 
-        for (int y = 0; y < lines.Length; y++)
+        for (int y = 0; y < lines.Count; y++)
         {
             var line = lines[y];
             var baseline = padding - metrics.Ascent + (y * lineStep);
 
-            for (int x = 0; x < line.Length; x++)
+            for (int x = 0; x < line.Count; x++)
             {
-                var character = line[x].ToString();
+                var glyph = line[x];
+                paint.Color = glyph.Color;
                 var drawX = padding + (x * cellWidth);
-                    canvas.DrawText(character, drawX, baseline, SKTextAlign.Left, font, paint);
+                canvas.DrawText(glyph.Character.ToString(), drawX, baseline, SKTextAlign.Left, font, paint);
             }
         }
 
@@ -165,15 +165,16 @@ public static class Download
         AnsiConsole.MarkupLine($"[green]Saved PNG to:[/] {outputPath}");
     }
 
-    private static string StripMarkup(string input)
+    private static List<List<PngGlyph>> ParsePngLines(string input)
     {
-        var sb = new StringBuilder();
+        var lines = new List<List<PngGlyph>> { new() };
+        var currentColor = SKColors.Black;
 
         for (int i = 0; i < input.Length; i++)
         {
             if (MatchesAt(input, i, "[["))
             {
-                sb.Append('[');
+                lines[^1].Add(new PngGlyph('[', currentColor));
                 i++;
                 continue;
             }
@@ -183,6 +184,7 @@ public static class Download
                 var end = input.IndexOf("]", i, StringComparison.OrdinalIgnoreCase);
                 if (end >= 0)
                 {
+                    currentColor = ParseColorTag(input.Substring(i + 5, end - (i + 5) - 1));
                     i = end;
                     continue;
                 }
@@ -190,14 +192,41 @@ public static class Download
 
             if (MatchesAt(input, i, "[/]"))
             {
+                currentColor = SKColors.Black;
                 i += 2;
                 continue;
             }
 
-            sb.Append(input[i]);
+            if (input[i] == '\r')
+                continue;
+
+            if (input[i] == '\n')
+            {
+                lines.Add(new List<PngGlyph>());
+                currentColor = SKColors.Black;
+                continue;
+            }
+
+            lines[^1].Add(new PngGlyph(input[i], currentColor));
         }
 
-        return sb.ToString();
+        return lines;
+    }
+
+    private static SKColor ParseColorTag(string rgb)
+    {
+        var parts = rgb.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
+        if (parts.Length != 3)
+            return SKColors.Black;
+
+        if (byte.TryParse(parts[0], out var red) &&
+            byte.TryParse(parts[1], out var green) &&
+            byte.TryParse(parts[2], out var blue))
+        {
+            return new SKColor(red, green, blue);
+        }
+
+        return SKColors.Black;
     }
 
     private static bool MatchesAt(string input, int index, string value)
@@ -205,4 +234,6 @@ public static class Download
         if (index + value.Length > input.Length) return false;
         return string.Compare(input, index, value, 0, value.Length, StringComparison.OrdinalIgnoreCase) == 0;
     }
+
+    private readonly record struct PngGlyph(char Character, SKColor Color);
 }
