@@ -40,22 +40,25 @@ public static class Render
         if (options.Color) AnsiConsole.Markup(sb.ToString());
         else AnsiConsole.Write(sb.ToString());
 
-        var newchoice = AnsiConsole.Prompt(
-            new SelectionPrompt<string>()
-                .Title("What would you like to do?")
-                .AddChoices(new[] { "Download as HTML", "Download as PNG", "Exit" }));
-        
-        if (newchoice == "Download as HTML")
+        while (true)
         {
-            Download.HTMLDownload(sb.ToString());
-        }
-        else if (newchoice == "Download as PNG")
-        {
-            Download.PNGDownload(sb.ToString());
-        }
-        else if (newchoice == "Exit")
-        {
-            return;
+            var newchoice = AnsiConsole.Prompt(
+                new SelectionPrompt<string>()
+                    .Title("What would you like to do?")
+                    .AddChoices(new[] { "Download as HTML", "Download as PNG", "Exit" }));
+
+            if (newchoice == "Download as HTML")
+            {
+                Download.HTMLDownload(sb.ToString());
+            }
+            else if (newchoice == "Download as PNG")
+            {
+                Download.PNGDownload(sb.ToString());
+            }
+            else
+            {
+                return;
+            }
         }
     }
 }
