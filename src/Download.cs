@@ -1,6 +1,7 @@
 namespace Asciify;
 using Spectre.Console;
 using System.Text;
+using SkiaSharp;
 
 public static class Download
 {
@@ -102,6 +103,106 @@ public static class Download
 
     public static void PNGDownload(string asciiArt)
     {
-        AnsiConsole.MarkupLine("[yellow]PNG download is not implemented yet.[/]");
+        var fileName = AnsiConsole.Ask<string>("Enter a file name for the PNG download:");
+        if (string.IsNullOrWhiteSpace(fileName)) fileName = "ascii-art.png";
+        if (!fileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
+            fileName += ".png";
+
+        var outputPath = Path.Combine(Environment.CurrentDirectory, fileName);
+        var plainText = StripMarkup(asciiArt).Replace("\r\n", "\n");
+        var lines = plainText.Split('\n');
+        var maxColumns = lines.Length == 0 ? 0 : lines.Max(line => line.Length);
+
+        const float textSize = 24f;
+        const float padding = 24f;
+
+        using var typeface = SKTypeface.FromFamilyName("Consolas") ?? SKTypeface.Default;
+        using var paint = new SKPaint
+        {
+            IsAntialias = true,
+            Color = SKColors.Black,
+            IsStroke = false
+        };
+
+        using var font = new SKFont(typeface, textSize)
+        {
+            Edging = SKFontEdging.Antialias,
+            Subpixel = true,
+            Hinting = SKFontHinting.Full
+        };
+
+        font.GetFontMetrics(out var metrics);
+        var cellWidth = Math.Max(font.MeasureText("M"), 1f);
+        var cellHeight = Math.Max(metrics.Descent - metrics.Ascent, 1f);
+        var lineStep = cellHeight;
+
+        var width = Math.Max(1, (int)Math.Ceiling((maxColumns * cellWidth) + (padding * 2)));
+        var height = Math.Max(1, (int)Math.Ceiling((lines.Length * lineStep) + (padding * 2)));
+
+        using var bitmap = new SKBitmap(width, height, SKColorType.Bgra8888, SKAlphaType.Opaque);
+        using var canvas = new SKCanvas(bitmap);
+
+        canvas.Clear(SKColors.White);
+
+        for (int y = 0; y < lines.Length; y++)
+        {
+            var line = lines[y];
+            var baseline = padding - metrics.Ascent + (y * lineStep);
+
+            for (int x = 0; x < line.Length; x++)
+            {
+                var character = line[x].ToString();
+                var drawX = padding + (x * cellWidth);
+                    canvas.DrawText(character, drawX, baseline, SKTextAlign.Left, font, paint);
+            }
+        }
+
+        using var image = SKImage.FromBitmap(bitmap);
+        using var data = image.Encode(SKEncodedImageFormat.Png, 100);
+        using var output = File.Open(outputPath, FileMode.Create, FileAccess.Write, FileShare.None);
+        data.SaveTo(output);
+
+        AnsiConsole.MarkupLine($"[green]Saved PNG to:[/] {outputPath}");
+    }
+
+    private static string StripMarkup(string input)
+    {
+        var sb = new StringBuilder();
+
+        for (int i = 0; i < input.Length; i++)
+        {
+            if (MatchesAt(input, i, "[["))
+            {
+                sb.Append('[');
+                i++;
+                continue;
+            }
+
+            if (MatchesAt(input, i, "[rgb("))
+            {
+                var end = input.IndexOf("]", i, StringComparison.OrdinalIgnoreCase);
+                if (end >= 0)
+                {
+                    i = end;
+                    continue;
+                }
+            }
+
+            if (MatchesAt(input, i, "[/]"))
+            {
+                i += 2;
+                continue;
+            }
+
+            sb.Append(input[i]);
+        }
+
+        return sb.ToString();
+    }
+
+    private static bool MatchesAt(string input, int index, string value)
+    {
+        if (index + value.Length > input.Length) return false;
+        return string.Compare(input, index, value, 0, value.Length, StringComparison.OrdinalIgnoreCase) == 0;
     }
 }
