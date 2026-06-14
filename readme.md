@@ -5,9 +5,9 @@ Image-to-ASCII art for the terminal with color support, multiple character sets,
 
 ## Highlights
 - Convert images to colored ASCII art in the terminal
-- Multiple character sets for different styles and densities
 - Interactive menu for quick configuration
-- Optional output to a file for reuse
+- Export ASCII art as HTML or PNG
+- Download multiple output types from the same render
 
 
 ## Features
@@ -27,6 +27,8 @@ Image-to-ASCII art for the terminal with color support, multiple character sets,
 | --- | --- |
 | [Program.cs](Program.cs) | Entry point |
 | [src/Menu.cs](src/Menu.cs) | Interactive menu and UI flow |
+| [src/Renderize.cs](src/Renderize.cs) | Image-to-ASCII rendering engine |
+| [src/Download.cs](src/Download.cs) | HTML and PNG export logic |
 | [src/UserOptions.cs](src/UserOptions.cs) | User configuration model |
 | [readme.md](readme.md) | Project documentation |
 
