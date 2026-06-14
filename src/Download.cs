@@ -109,10 +109,10 @@ public static class Download
             fileName += ".png";
 
         // For now, we'll just do a white background. I'll add more background colors in this session.
-        _ = AnsiConsole.Prompt(
+        var backgroundColor = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title("Choose a background color for the PNG:")
-                .AddChoices(new[] { "White", "Black", "Transparent", "Gray"}));
+                .AddChoices(new[] { "White", "Black", "Gray"}));
 
         var outputPath = Path.Combine(Environment.CurrentDirectory, fileName);
         var lines = ParsePngLines(asciiArt);
@@ -147,7 +147,13 @@ public static class Download
         using var bitmap = new SKBitmap(width, height, SKColorType.Bgra8888, SKAlphaType.Opaque);
         using var canvas = new SKCanvas(bitmap);
 
-        canvas.Clear(SKColors.White);
+        canvas.Clear(backgroundColor switch
+        {
+            "White" => SKColors.White,
+            "Black" => SKColors.Black,
+            "Gray" => SKColors.Gray,
+            _ => SKColors.White
+        });
 
         for (int y = 0; y < lines.Count; y++)
         {
