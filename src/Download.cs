@@ -108,6 +108,12 @@ public static class Download
         if (!fileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
             fileName += ".png";
 
+        // For now, we'll just do a white background. I'll add more background colors in this session.
+        _ = AnsiConsole.Prompt(
+            new SelectionPrompt<string>()
+                .Title("Choose a background color for the PNG:")
+                .AddChoices(new[] { "White", "Black", "Transparent", "Gray"}));
+
         var outputPath = Path.Combine(Environment.CurrentDirectory, fileName);
         var lines = ParsePngLines(asciiArt);
         var maxColumns = lines.Count == 0 ? 0 : lines.Max(line => line.Count);
