@@ -11,7 +11,7 @@ public static class Render
         using var bitmap = SKBitmap.Decode(filePath);
         const float redpixel = 0.299f, greenpixel = 0.587f, bluepixel = 0.114f;
 
-        //Redimention the iamge based on the user specified width while maintaining aspect ratio.
+        //Redimention the image based on the user specified width while maintaining aspect ratio.
         int newHeight =  (int)((float)bitmap.Height / bitmap.Width * options.Width / 2);
         var resized = new SKBitmap(new SKImageInfo(options.Width, newHeight));
         bitmap.ScalePixels(resized, SKSamplingOptions.Default);
