@@ -9,7 +9,6 @@ Image-to-ASCII art for the terminal with color support, multiple character sets,
 - Export ASCII art as HTML or PNG
 - Download multiple output types from the same render
 
-
 ## Features
 
 | Area | Details |
@@ -31,6 +30,15 @@ Image-to-ASCII art for the terminal with color support, multiple character sets,
 | [src/Download.cs](src/Download.cs) | HTML and PNG export logic |
 | [src/UserOptions.cs](src/UserOptions.cs) | User configuration model |
 | [readme.md](readme.md) | Project documentation |
+
+## Small demo :)
+<table>
+  <tr>
+    <img src="assets/asciify!.jpeg" alt="Sample cat image" style="width: 37%; height: auto;" />
+    <img src="assets/cat.png" alt="Sample cat image" style="width: 35%; height: auto;" />
+  </tr>
+</table>
+
 
 ## Requirements
 - .NET SDK 10.0 or later
