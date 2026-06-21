@@ -7,9 +7,14 @@ public static class Download
 {
     public static void HTMLDownload(string asciiArt)
     {
-        // Rn the user can't escape the download when promted for the file name, implementing later an escape option in the file name prompt.
+        var fileName = AnsiConsole.Ask<string>("Enter a file name for the HTML download (q to cancel):");
+        
+        if (fileName.ToLower() == "q")
+        {
+            AnsiConsole.MarkupLine("[yellow]HTML download cancelled.[/]");
+            return;
+        }
 
-        var fileName = AnsiConsole.Ask<string>("Enter a file name for the HTML download:");
         if (string.IsNullOrWhiteSpace(fileName)) fileName = "ascii-art.html";
         if (!fileName.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
             fileName += ".html";
@@ -105,8 +110,14 @@ public static class Download
 
     public static void PNGDownload(string asciiArt)
     {
-        // Rn the user can't escape the download when promted for the file name, implementing later an escape option in the file name prompt.
-        var fileName = AnsiConsole.Ask<string>("Enter a file name for the PNG download:");
+        var fileName = AnsiConsole.Ask<string>("Enter a file name for the PNG download (q to cancel):");
+
+        if (fileName.ToLower() == "q")
+        {
+            AnsiConsole.MarkupLine("[yellow]PNG download cancelled.[/]");
+            return;
+        }
+
         if (string.IsNullOrWhiteSpace(fileName)) fileName = "ascii-art.png";
         if (!fileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
             fileName += ".png";
