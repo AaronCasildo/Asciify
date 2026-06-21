@@ -24,8 +24,16 @@ public static class Menu
         while (true)
         {
             AnsiConsole.Clear();
-            AnsiConsole.Write(new FigletText("Asciify").Centered().Color(Color.Green));
-            Console.WriteLine("Welcome to Asciify!");
+            var banner = new Panel(Align.Center(new FigletText("Asciify").Color(Color.Green)))
+            {
+                Border = BoxBorder.Rounded,
+                BorderStyle = new Style(Color.Green),
+                Padding = new Padding(2, 1)
+            };
+
+            AnsiConsole.Write(banner);
+            AnsiConsole.Write(Align.Center(new Markup("[grey]Image → ASCII converter[/]")));
+            AnsiConsole.WriteLine();
 
             var choice = AnsiConsole.Prompt(
                 new SelectionPrompt<string>()
