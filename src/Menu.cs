@@ -44,16 +44,38 @@ public static class Menu
 
             else if (choice == "Exit")
             {
-                Console.Clear();
-                
+                AnsiConsole.Clear();
+
                 if (Random.Shared.Next(0, 1000) == 0) //Easter egg: 1 in 1000 chance to show a dark souls style message on exit.
-                    AnsiConsole.Write(new FigletText("YOU DIED").Centered().Color(Color.Red));
+                {
+                    var deathBanner = new Panel(Align.Center(new FigletText("YOU DIED").Color(Color.Red)))
+                    {
+                        Border = BoxBorder.Rounded,
+                        BorderStyle = new Style(Color.Red),
+                        Padding = new Padding(2, 1)
+                    };
+
+                    AnsiConsole.Write(deathBanner);
+                    AnsiConsole.Write(Align.Center(new Markup("[grey]Asciify has fallen[/]")));
+                }
                 else
                 {
-                    AnsiConsole.Write(new FigletText("Goodbye!").Centered().Color(Color.Yellow));    
+                    var goodbyeBanner = new Panel(Align.Center(new FigletText("Goodbye!").Color(Color.Yellow)))
+                    {
+                        Border = BoxBorder.Rounded,
+                        BorderStyle = new Style(Color.Yellow),
+                        Padding = new Padding(2, 1)
+                    };
+
+                    AnsiConsole.Write(goodbyeBanner);
+                    AnsiConsole.Write(Align.Center(new Markup("[grey]Thanks for using Asciify[/]")));
                 }
+
+                AnsiConsole.WriteLine();
+                AnsiConsole.MarkupLine("[green]Press any key to exit...[/]");
+                Console.ReadKey(true);
                 break;
-            } 
+            }
         }
     }
 
