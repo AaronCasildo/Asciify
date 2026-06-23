@@ -48,7 +48,7 @@ public static class Menu
 
                 if (Random.Shared.Next(0, 1000) == 0) //Easter egg: 1 in 1000 chance to show a dark souls style message on exit.
                 {
-                    var deathBanner = new Panel(Align.Center(new FigletText("YOU DIED").Color(Color.Red)))
+                    var deathBanner = new Panel(Align.Center(new FigletText("YOU DIED, kinda").Color(Color.Red)))
                     {
                         Border = BoxBorder.Rounded,
                         BorderStyle = new Style(Color.Red),
