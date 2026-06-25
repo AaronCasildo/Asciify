@@ -21,7 +21,7 @@ public static class Render
 
             for (int y = 0; y < resized.Height; y++)
             {
-glyphs.Add(new List<Glyph>());
+                glyphs.Add(new List<Glyph>());
                 for (int x = 0; x < resized.Width; x++)
                 {
                     var pixel = resized.GetPixel(x, y);
@@ -59,6 +59,36 @@ glyphs.Add(new List<Glyph>());
             {
                 return;
             }
+        }
+    }
+
+    public static void RenderConsole(List<List<Glyph>> glyphs){
+        
+        var sb = new System.Text.StringBuilder();
+        foreach (var line in glyphs)
+        {
+            foreach (var glyph in line)
+            {
+                if (glyph.Color != SKColor.Empty)
+                {
+                    string ch = glyph.Character == '[' ? "[[" : glyph.Character.ToString();
+                    sb.Append($"[#{glyph.Color.Red:X2}{glyph.Color.Green:X2}{glyph.Color.Blue:X2}]{ch}[/]");
+                }
+                else
+                {
+                    sb.Append(glyph.Character);
+                }
+            }
+            sb.AppendLine();
+        }
+
+        if (glyphs.Any(line => line.Any(g => g.Color != SKColor.Empty)))
+        {
+            AnsiConsole.Markup(sb.ToString());
+        }
+        else
+        {
+            AnsiConsole.Markup(sb.ToString());
         }
     }
 }
