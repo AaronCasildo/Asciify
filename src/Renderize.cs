@@ -17,10 +17,11 @@ public static class Render
         bitmap.ScalePixels(resized, SKSamplingOptions.Default);
         
         const string chars = " .,:;i1tfLCG08@";
-            var sb = new System.Text.StringBuilder();
+            var glyphs = new List<List<Glyph>>();
 
             for (int y = 0; y < resized.Height; y++)
             {
+glyphs.Add(new List<Glyph>());
                 for (int x = 0; x < resized.Width; x++)
                 {
                     var pixel = resized.GetPixel(x, y);
@@ -30,15 +31,14 @@ public static class Render
                     if (options.Color)
                     {
                         string ch = chars[index] == '[' ? "[[" : chars[index].ToString();
-                        sb.Append($"[rgb({pixel.Red},{pixel.Green},{pixel.Blue})]{ch}[/]");
+                        glyphs[y].Add(new Glyph(ch[0], new SKColor(pixel.Red, pixel.Green, pixel.Blue)));
                     }
                     else
-                        sb.Append(chars[index]);
+                        glyphs[y].Add(new Glyph(chars[index], SKColor.Empty));
                 }
-                sb.AppendLine();
             }
-        if (options.Color) AnsiConsole.Markup(sb.ToString());
-        else AnsiConsole.Write(sb.ToString());
+
+        RenderConsole(glyphs);
 
         while (true)
         {
@@ -49,11 +49,11 @@ public static class Render
 
             if (newchoice == "Download as HTML")
             {
-                Download.HTMLDownload(sb.ToString());
+                // Download.HTMLDownload(sb.ToString()); we will continue with this later on.
             }
             else if (newchoice == "Download as PNG")
             {
-                Download.PNGDownload(sb.ToString());
+                // Download.PNGDownload(sb.ToString()); we will continue with this later on.
             }
             else
             {
