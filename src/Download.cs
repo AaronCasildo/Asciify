@@ -67,7 +67,7 @@ public static class Download
             .Replace("\"", "&quot;");
     }
 
-    public static void PNGDownload(string asciiArt)
+    public static void PNGDownload(List<List<Glyph>> glyphs)
     {
         var fileName = AnsiConsole.Ask<string>("Enter a file name for the PNG download (q to cancel):");
 
@@ -81,14 +81,13 @@ public static class Download
         if (!fileName.EndsWith(".png", StringComparison.OrdinalIgnoreCase))
             fileName += ".png";
 
-        // For now, we'll just do a white background. I'll add more background colors in this session.
         var backgroundColor = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title("Choose a background color for the PNG:")
                 .AddChoices(new[] { "White", "Black", "Gray"}));
 
         var outputPath = Path.Combine(Environment.CurrentDirectory, fileName);
-        var lines = ParsePngLines(asciiArt);
+        var lines = glyphs;
         var maxColumns = lines.Count == 0 ? 0 : lines.Max(line => line.Count);
 
         const float textSize = 24f;
