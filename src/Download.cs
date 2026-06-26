@@ -44,61 +44,6 @@ public static class Download
         AnsiConsole.MarkupLine($"[green]Saved HTML to:[/] {outputPath}");
     }
 
-    private static string ConvertMarkupToHtml(string input)
-    {
-        var sb = new StringBuilder();
-        var spanOpen = false;
-
-        for (int i = 0; i < input.Length; i++)
-        {
-            if (IsAt(input, i, "[["))
-            {
-                sb.Append('[');
-                i++;
-                continue;
-            }
-
-            if (IsAt(input, i, "[rgb("))
-            {
-                var end = input.IndexOf(")]", i, StringComparison.OrdinalIgnoreCase);
-                if (end < 0)
-                    end = input.IndexOf(']', i);
-
-                if (end > i)
-                {
-                    var rgb = input.Substring(i + 5, end - (i + 5) - 1);
-                    if (spanOpen) sb.Append("</span>");
-                    sb.Append("<span style=\"color: rgb(" + HtmlEncode(rgb) + ")\">" );
-                    spanOpen = true;
-                    i = end + 1;
-                    continue;
-                }
-            }
-
-            if (IsAt(input, i, "[/]"))
-            {
-                if (spanOpen)
-                {
-                    sb.Append("</span>");
-                    spanOpen = false;
-                }
-                i += 2;
-                continue;
-            }
-
-            sb.Append(HtmlEncode(input[i].ToString()));
-        }
-
-        if (spanOpen) sb.Append("</span>");
-        return sb.ToString();
-    }
-
-    private static bool IsAt(string input, int index, string value)
-    {
-        if (index + value.Length > input.Length) return false;
-        return string.Compare(input, index, value, 0, value.Length, StringComparison.OrdinalIgnoreCase) == 0;
-    }
-
     private static string HtmlEncode(string value)
     {
         return value
