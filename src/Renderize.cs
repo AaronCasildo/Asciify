@@ -49,7 +49,7 @@ public static class Render
 
             if (newchoice == "Download as HTML")
             {
-                // Download.HTMLDownload(sb.ToString()); we will continue with this later on.
+                Download.HTMLDownload(glyphs);
             }
             else if (newchoice == "Download as PNG")
             {
