@@ -5,7 +5,7 @@ using SkiaSharp;
 
 public static class Download
 {
-    public static void HTMLDownload(string asciiArt)
+    public static void HTMLDownload(List<List<Glyph>> glyphs)
     {
         var fileName = AnsiConsole.Ask<string>("Enter a file name for the HTML download (q to cancel):");
         
@@ -18,11 +18,25 @@ public static class Download
         if (string.IsNullOrWhiteSpace(fileName)) fileName = "ascii-art.html";
         if (!fileName.EndsWith(".html", StringComparison.OrdinalIgnoreCase))
             fileName += ".html";
-
+        
         var outputPath = Path.Combine(Environment.CurrentDirectory, fileName);
-        var htmlBody = asciiArt.Contains("[rgb(", StringComparison.OrdinalIgnoreCase)
-            ? ConvertMarkupToHtml(asciiArt)
-            : HtmlEncode(asciiArt);
+        var sb = new StringBuilder();
+        foreach (var line in glyphs)
+        {
+            foreach (var glyph in line)
+            {
+                var ch = HtmlEncode(glyph.Character.ToString());
+                if (glyph.Color != SKColor.Empty)
+                {
+                    sb.Append($"<span style=\"color: rgb({glyph.Color.Red},{glyph.Color.Green},{glyph.Color.Blue})\">{ch}</span>");
+                }
+                else
+                {
+                    sb.Append(ch);
+                }
+            }
+            sb.Append("\n");
+        }
 
         var html = $"<!doctype html>\n" +
                    "<html lang=\"en\">\n" +
@@ -36,7 +50,7 @@ public static class Download
                    "  </style>\n" +
                    "</head>\n" +
                    "<body>\n" +
-                   "  <pre>" + htmlBody + "</pre>\n" +
+                   "  <pre>" + sb + "</pre>\n" +
                    "</body>\n" +
                    "</html>\n";
 
