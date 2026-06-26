@@ -6,7 +6,7 @@ Image-to-ASCII art for the terminal with color support, multiple character sets,
 ## Highlights
 - Convert images to colored ASCII art in the terminal
 - Interactive menu for quick configuration
-- Export ASCII art as HTML or PNG **(refactor in progress)**
+- Export ASCII art as HTML or PNG **(refactor in progress, PNG donwload pending)**
 - Download multiple output types from the same render **(refactor in progress)**
 
 ## Features
