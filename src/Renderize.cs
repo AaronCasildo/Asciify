@@ -53,7 +53,7 @@ public static class Render
             }
             else if (newchoice == "Download as PNG")
             {
-                // Download.PNGDownload(sb.ToString()); we will continue with this later on.
+                Download.PNGDownload(glyphs);
             }
             else
             {
